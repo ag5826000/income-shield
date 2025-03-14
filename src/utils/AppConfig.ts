@@ -6,7 +6,7 @@ const localePrefix: LocalePrefix = 'as-needed';
 
 // FIXME: Update this configuration file based on your project information
 export const AppConfig = {
-  name: 'SaaS Template',
+  name: 'Income Shield',
   locales: [
     {
       id: 'en',
@@ -21,54 +21,52 @@ export const AppConfig = {
 export const AllLocales = AppConfig.locales.map(locale => locale.id);
 
 export const PLAN_ID = {
-  FREE: 'free',
+  BASIC: 'basic',
+  STANDARD: 'standard',
   PREMIUM: 'premium',
-  ENTERPRISE: 'enterprise',
 } as const;
 
 export const PricingPlanList: Record<string, PricingPlan> = {
-  [PLAN_ID.FREE]: {
-    id: PLAN_ID.FREE,
-    price: 0,
+  [PLAN_ID.BASIC]: {
+    id: PLAN_ID.BASIC,
+    price: 49,
     interval: BILLING_INTERVAL.MONTH,
     testPriceId: '',
     devPriceId: '',
     prodPriceId: '',
     features: {
-      teamMember: 2,
-      website: 2,
-      storage: 2,
-      transfer: 2,
+      coveragePeriod: 3,
+      coveragePercentage: 60,
+      responseTime: 7,
+      supportType: 'email',
+    },
+  },
+  [PLAN_ID.STANDARD]: {
+    id: PLAN_ID.STANDARD,
+    price: 89,
+    interval: BILLING_INTERVAL.MONTH,
+    testPriceId: 'price_standard_test',
+    devPriceId: 'price_1PNksvKOp3DEwzQlGOXO7YBK',
+    prodPriceId: '',
+    features: {
+      coveragePeriod: 6,
+      coveragePercentage: 70,
+      responseTime: 3,
+      supportType: 'priority',
     },
   },
   [PLAN_ID.PREMIUM]: {
     id: PLAN_ID.PREMIUM,
-    price: 79,
+    price: 149,
     interval: BILLING_INTERVAL.MONTH,
-    testPriceId: 'price_premium_test', // Use for testing
-    // FIXME: Update the price ID, you can create it after running `npm run stripe:setup-price`
-    devPriceId: 'price_1PNksvKOp3DEwzQlGOXO7YBK',
-    prodPriceId: '',
-    features: {
-      teamMember: 5,
-      website: 5,
-      storage: 5,
-      transfer: 5,
-    },
-  },
-  [PLAN_ID.ENTERPRISE]: {
-    id: PLAN_ID.ENTERPRISE,
-    price: 199,
-    interval: BILLING_INTERVAL.MONTH,
-    testPriceId: 'price_enterprise_test', // Use for testing
-    // FIXME: Update the price ID, you can create it after running `npm run stripe:setup-price`
+    testPriceId: 'price_premium_test',
     devPriceId: 'price_1PNksvKOp3DEwzQli9IvXzgb',
     prodPriceId: 'price_123',
     features: {
-      teamMember: 100,
-      website: 100,
-      storage: 100,
-      transfer: 100,
+      coveragePeriod: 9,
+      coveragePercentage: 80,
+      responseTime: 1,
+      supportType: 'dedicated',
     },
   },
 };

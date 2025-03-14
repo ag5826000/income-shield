@@ -1,0 +1,118 @@
+# Income Shield Implementation Plan
+
+## Overview
+This document outlines the step-by-step plan to transform the existing SaaS landing page template into a layoff insurance landing page for tech workers called "Income Shield". The implementation will maintain the existing animation/style structure while updating content and adding new features.
+
+## Project Requirements
+
+1. Update content focused on layoff insurance benefits for tech workers
+2. Create a new premium estimator calculator page that will be the target for all CTAs
+3. Add a survey component to gauge interest in the product based on premium amounts
+4. Remove signup functionalities and redirect all CTAs to the calculator page
+5. Define 3 coverage packages: 3-month (Basic), 6-month (Standard), and 9-month (Premium)
+
+## Implementation Steps
+
+### 1. Update AppConfig and Localization
+
+- Modify `src/utils/AppConfig.ts`:
+  - Update app name to "Income Shield"
+  - Replace existing plan IDs with "BASIC", "STANDARD", and "PREMIUM"
+  - Update pricing plan structure to reflect 3, 6, and 9-month coverage options
+  - Add insurance-specific features to pricing plans
+
+- Update localization files in `src/locales`:
+  - Create new translations for insurance-related terms
+  - Update existing translations in Hero, Pricing, Features, and FAQ sections
+
+### 2. Update Landing Page Components
+
+#### Hero Section (`src/templates/Hero.tsx`)
+- Update title, description, and call-to-action buttons
+- Change social media links to point to Income Shield
+- Update button actions to point to the calculator page
+- Adjust messaging to focus on layoff insurance for tech workers
+
+#### Features Section (`src/templates/Features.tsx`)
+- Update feature cards to highlight layoff insurance benefits
+- Replace existing features with tech worker-focused protection
+- Add visualizations or stats about tech layoffs
+- Include information about coverage terms
+
+#### Pricing Section (`src/templates/Pricing.tsx` & `src/features/billing/PricingInformation.tsx`)
+- Update pricing cards to show 3, 6, and 9-month coverage options
+- Rename plans to Basic, Standard, and Premium
+- Replace existing features with insurance-specific benefits:
+  - Basic (3-month): Essential coverage for short-term job transitions
+  - Standard (6-month): Extended coverage for medium-term job searches
+  - Premium (9-month): Comprehensive coverage for long-term career transitions
+- Modify all buttons to redirect to the calculator page
+
+#### FAQ Section (`src/templates/FAQ.tsx`)
+- Update frequently asked questions to address insurance-specific concerns
+- Add questions about eligibility, claims, coverage terms, etc.
+- Remove irrelevant SaaS-related questions
+
+#### CTA Section (`src/templates/CTA.tsx`)
+- Update call-to-action to promote the premium calculator
+- Modify button to redirect to the calculator page
+
+#### Navbar & Footer (`src/templates/Navbar.tsx` & `src/templates/Footer.tsx`)
+- Update navigation links
+- Replace login/signup buttons with a calculator button
+- Update footer content and links
+
+### 3. Create Premium Calculator Page
+
+- Create a new page at `src/app/[locale]/(unauth)/calculator/page.tsx`
+- Design a form with the following fields:
+  - Industry/Role selection (focusing on tech jobs)
+  - Current salary input
+  - Years of experience
+  - Coverage period selection (3, 6, or 9 months)
+  - Location/state (for regional rate adjustment)
+  
+- Implement calculator logic:
+  - Calculate premium based on input factors
+  - Display monthly and annual premium amounts
+  - Show coverage details based on the selected plan
+  
+- Add clear CTAs:
+  - "Get Coverage" button
+  - "Learn More" option for more information
+
+### 4. Create Interest Survey Component
+
+- Develop a survey component to display after premium calculation
+- Include questions like:
+  - How likely are you to purchase this coverage?
+  - What premium amount would you consider reasonable?
+  - What additional benefits would make this more attractive?
+  - How concerned are you about potential layoffs?
+  
+- Create a simple data collection mechanism:
+  - Store responses temporarily (no authentication required)
+  - Consider using localStorage or sessionStorage
+  - Optionally collect email for follow-up (with clear consent)
+
+### 5. Remove Authentication/Signup Flows
+
+- Modify route handlers to redirect from auth-related pages to the calculator
+- Update `src/app/[locale]/(auth)` layout to redirect to the calculator
+- Remove signup buttons and forms, replacing them with calculator links
+- Update middleware to handle redirects appropriately
+
+### 6. Testing and Optimization
+
+- Test all page transitions and animations
+- Ensure responsive design works on all screen sizes
+- Validate form inputs and calculator logic
+- Test CTAs and button functionality
+- Optimize images and content for performance
+
+### 7. Content Creation
+
+- Develop compelling copy focused on layoff insurance benefits
+- Create clear value propositions for each coverage tier
+- Develop explanatory content about how the insurance works
+- Create terms and conditions specific to layoff insurance

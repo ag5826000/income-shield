@@ -17,13 +17,24 @@ export const Pricing = () => {
     >
       <PricingInformation
         buttonList={{
-          [PLAN_ID.FREE]: (
+          [PLAN_ID.BASIC]: (
             <Link
               className={buttonVariants({
                 size: 'sm',
                 className: 'mt-5 w-full',
               })}
-              href="/sign-up"
+              href="/calculator"
+            >
+              {t('button_text')}
+            </Link>
+          ),
+          [PLAN_ID.STANDARD]: (
+            <Link
+              className={buttonVariants({
+                size: 'sm',
+                className: 'mt-5 w-full',
+              })}
+              href="/calculator"
             >
               {t('button_text')}
             </Link>
@@ -34,18 +45,7 @@ export const Pricing = () => {
                 size: 'sm',
                 className: 'mt-5 w-full',
               })}
-              href="/sign-up"
-            >
-              {t('button_text')}
-            </Link>
-          ),
-          [PLAN_ID.ENTERPRISE]: (
-            <Link
-              className={buttonVariants({
-                size: 'sm',
-                className: 'mt-5 w-full',
-              })}
-              href="/sign-up"
+              href="/calculator"
             >
               {t('button_text')}
             </Link>

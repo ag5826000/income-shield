@@ -29,10 +29,10 @@ export type PricingPlan = {
   devPriceId: string;
   prodPriceId: string;
   features: {
-    teamMember: number;
-    website: number;
-    storage: number;
-    transfer: number;
+    coveragePeriod: number; // Number of months of coverage
+    coveragePercentage: number; // Percentage of salary covered
+    responseTime: number; // Response time in days
+    supportType: string; // Type of support (email, priority, dedicated)
   };
 };
 

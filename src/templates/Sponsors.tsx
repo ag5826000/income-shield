@@ -1,8 +1,8 @@
 import { Section } from '@/features/landing/Section';
-import { SponsorLogos } from '@/features/sponsors/SponsorLogos';
+import { TrustedCompanies } from '@/features/sponsors/TrustedCompanies';
 
 export const Sponsors = () => (
   <Section>
-    <SponsorLogos />
+    <TrustedCompanies />
   </Section>
 );

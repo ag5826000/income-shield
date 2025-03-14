@@ -65,7 +65,24 @@ export default function middleware(
     })(request, event);
   }
 
-  return intlMiddleware(request);
+  const response = intlMiddleware(request);
+
+  // Check if the request path matches auth-related paths
+  const url = request.nextUrl.clone();
+  const isAuthPath = url.pathname.includes('/sign-in') || 
+                    url.pathname.includes('/sign-up') || 
+                    url.pathname.includes('/auth') ||
+                    url.pathname.match(/^\/[^/]+\/auth/);
+
+  if (isAuthPath) {
+    // Get locale from the pathname
+    const locale = url.pathname.split('/')[1];
+    // Redirect to the calculator page with the correct locale
+    url.pathname = `/${locale}/calculator`;
+    return NextResponse.redirect(url);
+  }
+
+  return response;
 }
 
 export const config = {

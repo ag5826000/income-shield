@@ -20,30 +20,28 @@ export const PricingInformation = (props: {
           button={props.buttonList[plan.id]}
         >
           <PricingFeature>
-            {t('feature_team_member', {
-              number: plan.features.teamMember,
+            {t('feature_coverage_period', {
+              number: plan.features.coveragePeriod,
             })}
           </PricingFeature>
 
           <PricingFeature>
-            {t('feature_website', {
-              number: plan.features.website,
+            {t('feature_coverage_percentage', {
+              number: plan.features.coveragePercentage,
             })}
           </PricingFeature>
 
           <PricingFeature>
-            {t('feature_storage', {
-              number: plan.features.storage,
+            {t('feature_response_time', {
+              number: plan.features.responseTime,
             })}
           </PricingFeature>
 
           <PricingFeature>
-            {t('feature_transfer', {
-              number: plan.features.transfer,
-            })}
+            {plan.id === 'basic' && t('feature_support_email')}
+            {plan.id === 'standard' && t('feature_support_priority')}
+            {plan.id === 'premium' && t('feature_support_dedicated')}
           </PricingFeature>
-
-          <PricingFeature>{t('feature_email_support')}</PricingFeature>
         </PricingCard>
       ))}
     </div>
