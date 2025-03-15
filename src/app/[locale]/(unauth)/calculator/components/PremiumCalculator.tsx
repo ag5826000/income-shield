@@ -123,6 +123,12 @@ interface PremiumDetails {
   planFeatures: PlanFeatures;
 }
 
+// Create interface for modal state
+interface ModalState {
+  isOpen: boolean;
+  type: 'interest' | 'objection' | null;
+}
+
 export function PremiumCalculator() {
   // Form state
   const [salary, setSalary] = useState<number | ''>('');
@@ -141,10 +147,18 @@ export function PremiumCalculator() {
   const [additionalBenefits, setAdditionalBenefits] = useState<string>('');
   const [concernLevel, setConcernLevel] = useState<number | null>(null);
   const [email, setEmail] = useState<string>('');
+  const [objection, setObjection] = useState<string>('');
+  const [showSurvey, setShowSurvey] = useState<boolean>(false);
   
   // Premium calculation state
   const [premiumDetails, setPremiumDetails] = useState<PremiumDetails | null>(null);
   const [isCalculating, setIsCalculating] = useState<boolean>(false);
+  
+  // Modal state
+  const [modalState, setModalState] = useState<ModalState>({
+    isOpen: false,
+    type: null
+  });
   
   // Effect to calculate premium whenever relevant inputs change
   useEffect(() => {
@@ -262,20 +276,64 @@ export function PremiumCalculator() {
     setIsCalculating(false);
   };
   
-  // Handle form submission
-  const handleSubmitFeedback = (e: React.FormEvent) => {
+  // Function to open modal
+  const openModal = (type: 'interest' | 'objection') => {
+    setModalState({
+      isOpen: true,
+      type
+    });
+  };
+  
+  // Function to close modal
+  const closeModal = () => {
+    setModalState({
+      isOpen: false,
+      type: null
+    });
+  };
+  
+  // Handle interest form submission (Get Coverage)
+  const handleInterestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real application, this would send the survey data to a server
-    console.log('Survey submitted:', {
+    // In a real application, this would send the data to a server
+    console.log('Interest form submitted:', {
+      email,
+      showSurvey,
       interestLevel,
       reasonablePremium,
-      additionalBenefits,
-      concernLevel,
-      email
+      additionalBenefits
     });
     
-    // Show confirmation or success message
-    alert('Thank you for your feedback!');
+    // Show confirmation and close modal
+    alert('Thank you for your interest! We will contact you soon with more details.');
+    closeModal();
+    
+    // Reset form
+    setEmail('');
+    setShowSurvey(false);
+    setInterestLevel(null);
+    setReasonablePremium('');
+    setAdditionalBenefits('');
+  };
+  
+  // Handle objection form submission (Not interested)
+  const handleObjectionSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // In a real application, this would send the data to a server
+    console.log('Objection form submitted:', {
+      email,
+      objection,
+      concernLevel
+    });
+    
+    // Show confirmation and close modal
+    alert('Thank you for your feedback! We appreciate your time.');
+    closeModal();
+    
+    // Reset form
+    setEmail('');
+    setObjection('');
+    setConcernLevel(null);
   };
   
   return (
@@ -602,8 +660,21 @@ export function PremiumCalculator() {
             </div>
             
             <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 justify-center">
-              <Button size="lg" className="w-full sm:w-auto">Get Coverage</Button>
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">Learn More</Button>
+              <Button 
+                size="lg" 
+                className="w-full sm:w-auto"
+                onClick={() => openModal('interest')}
+              >
+                Get Coverage
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="w-full sm:w-auto"
+                onClick={() => openModal('objection')}
+              >
+                Not Right For Me
+              </Button>
             </div>
           </div>
         ) : (
@@ -615,103 +686,173 @@ export function PremiumCalculator() {
         )}
       </div>
       
-      {/* Survey Component */}
-      <div className="bg-card rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4">Help Us Improve</h2>
-        <p className="text-muted-foreground mb-4">
-          We'd love to hear your thoughts on our coverage options and pricing.
-        </p>
-        
-        <form onSubmit={handleSubmitFeedback} className="space-y-6">
-          {/* Interest Level */}
-          <div className="space-y-2">
-            <Label>How likely are you to purchase this coverage?</Label>
-            <div className="flex justify-between">
-              {[1, 2, 3, 4, 5].map((level) => (
-                <label key={level} className="flex flex-col items-center">
-                  <input 
-                    type="radio" 
-                    name="interest" 
-                    value={level} 
-                    className="mb-1" 
-                    checked={interestLevel === level}
-                    onChange={() => setInterestLevel(level)}
-                  />
-                  <span>{level}</span>
-                  {level === 1 && <span className="text-xs text-muted-foreground">Not likely</span>}
-                  {level === 5 && <span className="text-xs text-muted-foreground">Very likely</span>}
-                </label>
-              ))}
-            </div>
-          </div>
-          
-          {/* Premium Opinion */}
-          <div className="space-y-2">
-            <Label htmlFor="premium-opinion">
-              What premium amount would you consider reasonable
-              {country && countryCurrencies[country] ? ` (${countryCurrencies[country]?.code})` : ''}?
-            </Label>
-            <Input 
-              type="text" 
-              id="premium-opinion" 
-              placeholder="Enter amount" 
-              value={reasonablePremium}
-              onChange={(e) => setReasonablePremium(e.target.value)}
-            />
-          </div>
-          
-          {/* Additional Benefits */}
-          <div className="space-y-2">
-            <Label htmlFor="additional-benefits">What additional benefits would make this more attractive?</Label>
-            <textarea 
-              id="additional-benefits" 
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary h-24"
-              placeholder="Please share your thoughts"
-              value={additionalBenefits}
-              onChange={(e) => setAdditionalBenefits(e.target.value)}
-            ></textarea>
-          </div>
-          
-          {/* Concern Level */}
-          <div className="space-y-2">
-            <Label>How concerned are you about potential layoffs?</Label>
-            <div className="flex justify-between">
-              {[1, 2, 3, 4, 5].map((level) => (
-                <label key={level} className="flex flex-col items-center">
-                  <input 
-                    type="radio" 
-                    name="concern" 
-                    value={level} 
-                    className="mb-1" 
-                    checked={concernLevel === level}
-                    onChange={() => setConcernLevel(level)}
-                  />
-                  <span>{level}</span>
-                  {level === 1 && <span className="text-xs text-muted-foreground">Not concerned</span>}
-                  {level === 5 && <span className="text-xs text-muted-foreground">Very concerned</span>}
-                </label>
-              ))}
-            </div>
-          </div>
-          
-          {/* Email collection */}
-          <div className="space-y-2">
-            <Label htmlFor="email">Email for follow-up (optional)</Label>
-            <Input 
-              type="email" 
-              id="email" 
-              placeholder="your@email.com" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">
-              We respect your privacy and will only use your email to follow up about Income Shield.
+      {/* Interest Modal (Get Coverage) */}
+      {modalState.isOpen && modalState.type === 'interest' && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4">Get Started with Income Shield</h2>
+            <p className="text-muted-foreground mb-6">
+              Leave your email and we'll contact you with next steps to secure your coverage.
             </p>
+            
+            <form onSubmit={handleInterestSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="interest-email">Email Address *</Label>
+                <Input 
+                  id="interest-email" 
+                  type="email" 
+                  placeholder="you@example.com" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              
+              {!showSurvey ? (
+                <div className="pt-2">
+                  <Button 
+                    type="button" 
+                    variant="link" 
+                    className="p-0 h-auto text-sm"
+                    onClick={() => setShowSurvey(true)}
+                  >
+                    Help us improve by answering a few questions (optional)
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4 pt-4">
+                  <Separator />
+                  <h3 className="font-medium text-lg">Optional Survey</h3>
+                  
+                  <div className="space-y-2">
+                    <Label>How satisfied are you with our pricing?</Label>
+                    <div className="grid grid-cols-5 gap-2 mt-1">
+                      {[1, 2, 3, 4, 5].map((level) => (
+                        <label key={level} className="flex flex-col items-center text-center">
+                          <input 
+                            type="radio" 
+                            name="interest-level" 
+                            value={level} 
+                            className="mb-1 h-4 w-4" 
+                            checked={interestLevel === level}
+                            onChange={() => setInterestLevel(level)}
+                          />
+                          <span className="mt-1">{level}</span>
+                          {level === 1 && <span className="text-xs text-muted-foreground">Not satisfied</span>}
+                          {level === 5 && <span className="text-xs text-muted-foreground">Very satisfied</span>}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="reasonable-premium">
+                      What premium amount would you consider ideal
+                      {country && countryCurrencies[country] ? ` (${countryCurrencies[country]?.code})` : ''}?
+                    </Label>
+                    <Input 
+                      type="text" 
+                      id="reasonable-premium" 
+                      placeholder="Enter amount" 
+                      value={reasonablePremium}
+                      onChange={(e) => setReasonablePremium(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="additional-features">What additional features would make this more valuable?</Label>
+                    <textarea 
+                      id="additional-features" 
+                      className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary h-24"
+                      placeholder="Please share your thoughts"
+                      value={additionalBenefits}
+                      onChange={(e) => setAdditionalBenefits(e.target.value)}
+                    ></textarea>
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex space-x-3 pt-4">
+                <Button type="submit" className="w-full">
+                  Submit
+                </Button>
+                <Button type="button" variant="outline" className="w-full" onClick={closeModal}>
+                  Cancel
+                </Button>
+              </div>
+            </form>
           </div>
-          
-          <Button type="submit" className="w-full">Submit Feedback</Button>
-        </form>
-      </div>
+        </div>
+      )}
+      
+      {/* Objection Modal (Not interested) */}
+      {modalState.isOpen && modalState.type === 'objection' && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4">Help Us Understand</h2>
+            <p className="text-muted-foreground mb-6">
+              We'd appreciate your feedback on why our offering isn't right for you. This helps us improve our service.
+            </p>
+            
+            <form onSubmit={handleObjectionSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="objection-reason">What's holding you back? (Optional)</Label>
+                <textarea 
+                  id="objection-reason" 
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary h-24"
+                  placeholder="e.g., Price too high, Coverage too low, Better alternatives, etc."
+                  value={objection}
+                  onChange={(e) => setObjection(e.target.value)}
+                ></textarea>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>How concerned are you about potential layoffs?</Label>
+                <div className="grid grid-cols-5 gap-2 mt-1">
+                  {[1, 2, 3, 4, 5].map((level) => (
+                    <label key={level} className="flex flex-col items-center text-center">
+                      <input 
+                        type="radio" 
+                        name="concern-level" 
+                        value={level} 
+                        className="mb-1 h-4 w-4" 
+                        checked={concernLevel === level}
+                        onChange={() => setConcernLevel(level)}
+                      />
+                      <span className="mt-1">{level}</span>
+                      {level === 1 && <span className="text-xs text-muted-foreground">Not concerned</span>}
+                      {level === 5 && <span className="text-xs text-muted-foreground">Very concerned</span>}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="objection-email">Email (Optional)</Label>
+                <Input 
+                  id="objection-email" 
+                  type="email" 
+                  placeholder="you@example.com" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  We'll only use this to follow up if we address your concerns.
+                </p>
+              </div>
+              
+              <div className="flex space-x-3 pt-4">
+                <Button type="submit" className="w-full">
+                  Submit Feedback
+                </Button>
+                <Button type="button" variant="outline" className="w-full" onClick={closeModal}>
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
