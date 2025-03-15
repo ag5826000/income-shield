@@ -13,7 +13,7 @@ This document outlines the step-by-step plan to transform the existing SaaS land
 
 ## Implementation Steps
 
-### 1. Update AppConfig and Localization
+### 1. Update AppConfig and Localization (DONE)
 
 - Modify `src/utils/AppConfig.ts`:
   - Update app name to "Income Shield"
@@ -25,7 +25,7 @@ This document outlines the step-by-step plan to transform the existing SaaS land
   - Create new translations for insurance-related terms
   - Update existing translations in Hero, Pricing, Features, and FAQ sections
 
-### 2. Update Landing Page Components
+### 2. Update Landing Page Components (DONE)
 
 #### Hero Section (`src/templates/Hero.tsx`)
 - Update title, description, and call-to-action buttons
@@ -66,11 +66,15 @@ This document outlines the step-by-step plan to transform the existing SaaS land
 
 - Create a new page at `src/app/[locale]/(unauth)/calculator/page.tsx`
 - Design a form with the following fields:
-  - Industry/Role selection (focusing on tech jobs)
-  - Current salary input
+  - Current Monthly Salary
+  - Employer Size
+  - How many Years with Current Employer
   - Years of experience
+  - Country
+  - Type of Employement (Full time, contracter or part-time)
   - Coverage period selection (3, 6, or 9 months)
-  - Location/state (for regional rate adjustment)
+  - Coverage percentage slider based on period
+  - Age
   
 - Implement calculator logic:
   - Calculate premium based on input factors
@@ -92,7 +96,6 @@ This document outlines the step-by-step plan to transform the existing SaaS land
   
 - Create a simple data collection mechanism:
   - Store responses temporarily (no authentication required)
-  - Consider using localStorage or sessionStorage
   - Optionally collect email for follow-up (with clear consent)
 
 ### 5. Remove Authentication/Signup Flows

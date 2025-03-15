@@ -26,11 +26,11 @@ export const PricingInformation = (props: {
             })}
           </PricingFeature>
 
-          <PricingFeature>
+          {/* <PricingFeature>
             {t('feature_coverage_percentage', {
               number: plan.features.coveragePercentage,
             })}
-          </PricingFeature>
+          </PricingFeature> */}
 
           <PricingFeature>
             {t('feature_response_time', {
