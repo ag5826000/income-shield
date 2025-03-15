@@ -33,6 +33,12 @@ export type PricingPlan = {
     coveragePercentage: number; // Percentage of salary covered
     responseTime: number; // Response time in days
     supportType: string; // Type of support (email, priority, dedicated)
+    careerCounseling: boolean; // Career counseling sessions
+    resumeReview: boolean; // Resume review and optimization
+    interviewPrep: boolean; // Interview preparation
+    networkingEvents: boolean; // Access to networking events
+    jobSearchTools: boolean; // Premium job search tools
+    mentalHealthSupport: boolean; // Mental health support services
   };
 };
 

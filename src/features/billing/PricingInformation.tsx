@@ -18,6 +18,7 @@ export const PricingInformation = (props: {
           price={plan.price}
           interval={plan.interval}
           button={props.buttonList[plan.id]}
+          showCalculateInstead={true}
         >
           <PricingFeature>
             {t('feature_coverage_period', {
@@ -42,6 +43,30 @@ export const PricingInformation = (props: {
             {plan.id === 'standard' && t('feature_support_priority')}
             {plan.id === 'premium' && t('feature_support_dedicated')}
           </PricingFeature>
+
+          {plan.features.careerCounseling && (
+            <PricingFeature>{t('feature_career_counseling')}</PricingFeature>
+          )}
+
+          {plan.features.resumeReview && (
+            <PricingFeature>{t('feature_resume_review')}</PricingFeature>
+          )}
+
+          {plan.features.interviewPrep && (
+            <PricingFeature>{t('feature_interview_prep')}</PricingFeature>
+          )}
+
+          {plan.features.networkingEvents && (
+            <PricingFeature>{t('feature_networking_events')}</PricingFeature>
+          )}
+
+          {plan.features.jobSearchTools && (
+            <PricingFeature>{t('feature_job_search_tools')}</PricingFeature>
+          )}
+
+          {plan.features.mentalHealthSupport && (
+            <PricingFeature>{t('feature_mental_health_support')}</PricingFeature>
+          )}
         </PricingCard>
       ))}
     </div>

@@ -41,7 +41,7 @@
   "PricingPlan": {
     "basic_plan_name": "Basic",
     "standard_plan_name": "Standard",
-    "premium_plan_name": "Premium",
+    "premium_plan_name": "Executive",
     "basic_plan_description": "3-Month Coverage",
     "standard_plan_description": "6-Month Coverage",
     "premium_plan_description": "9-Month Coverage",
@@ -51,6 +51,13 @@
     "feature_support_email": "Email Support",
     "feature_support_priority": "Priority Support",
     "feature_support_dedicated": "Dedicated Case Manager",
+    "price_calculated": "Premium Based on Salary",
+    "feature_career_counseling": "Career Counseling Sessions",
+    "feature_resume_review": "Resume Review & Optimization",
+    "feature_interview_prep": "Interview Preparation",
+    "feature_networking_events": "Access to Networking Events",
+    "feature_job_search_tools": "Premium Job Search Tools",
+    "feature_mental_health_support": "Mental Health Support",
     "plan_interval_month": "month",
     "plan_interval_year": "year",
     "next_renew_date": "Your coverage renews on {date}"

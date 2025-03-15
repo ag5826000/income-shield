@@ -9,6 +9,7 @@ export const PricingCard = (props: {
   interval: BillingInterval;
   button: React.ReactNode;
   children: React.ReactNode;
+  showCalculateInstead?: boolean;
 }) => {
   const t = useTranslations('PricingPlan');
 
@@ -19,13 +20,21 @@ export const PricingCard = (props: {
       </div>
 
       <div className="mt-3 flex items-center justify-center">
-        <div className="text-5xl font-bold">
-          {`$${props.price}`}
-        </div>
+        {props.showCalculateInstead ? (
+          <div className="text-xl font-bold text-primary">
+            {t('price_calculated')}
+          </div>
+        ) : (
+          <>
+            <div className="text-5xl font-bold">
+              {`$${props.price}`}
+            </div>
 
-        <div className="ml-1 text-muted-foreground">
-          {`/ ${t(`plan_interval_${props.interval}`)}`}
-        </div>
+            <div className="ml-1 text-muted-foreground">
+              {`/ ${t(`plan_interval_${props.interval}`)}`}
+            </div>
+          </>
+        )}
       </div>
 
       <div className="mt-2 text-sm text-muted-foreground">
