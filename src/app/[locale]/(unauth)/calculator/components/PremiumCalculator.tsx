@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { submitSurveyResponse } from '@/services/survey';
+import { useRouter } from 'next/navigation';
 
 // Define types for the calculator
 type EmployerSize = 'startup' | 'small' | 'medium' | 'large' | 'enterprise' | '';
@@ -130,6 +132,9 @@ interface ModalState {
 }
 
 export function PremiumCalculator() {
+  // Add router for navigation
+  const router = useRouter();
+  
   // Form state
   const [salary, setSalary] = useState<number | ''>('');
   const [employerSize, setEmployerSize] = useState<EmployerSize>('');
@@ -159,6 +164,9 @@ export function PremiumCalculator() {
     isOpen: false,
     type: null
   });
+  
+  // Add submission loading state
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   
   // Effect to calculate premium whenever relevant inputs change
   useEffect(() => {
@@ -313,48 +321,97 @@ export function PremiumCalculator() {
     });
   };
   
-  // Handle interest form submission (Get Coverage)
-  const handleInterestSubmit = (e: React.FormEvent) => {
+  // Update to handle interest form submission with Supabase
+  const handleInterestSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real application, this would send the data to a server
-    console.log('Interest form submitted:', {
-      email,
-      showSurvey,
-      interestLevel,
-      reasonablePremium,
-      additionalBenefits
-    });
     
-    // Show confirmation and close modal
-    alert('Thank you for your interest! We will contact you soon with more details.');
-    closeModal();
+    if (!premiumDetails) return;
     
-    // Reset form
-    setEmail('');
-    setShowSurvey(false);
-    setInterestLevel(null);
-    setReasonablePremium('');
-    setAdditionalBenefits('');
+    // Prepare data for submission
+    const surveyData = {
+      email: email || undefined,
+      submission_type: 'interest' as const,
+      interest_level: interestLevel,
+      reasonable_premium: reasonablePremium || undefined,
+      additional_benefits: additionalBenefits || undefined,
+      estimated_premium: premiumDetails.monthlyCost,
+      currency_code: premiumDetails.currency.code,
+      country,
+      employer_size: employerSize,
+      employment_type: employmentType,
+      coverage_period: coveragePeriod,
+      coverage_percentage: coveragePercentage
+    };
+    
+    // Submit to Supabase
+    try {
+      setIsSubmitting(true);
+      await submitSurveyResponse(surveyData);
+      alert('Thank you for your interest! We will contact you soon with more details.');
+      closeModal();
+      
+      // Reset form
+      setEmail('');
+      setShowSurvey(false);
+      setInterestLevel(null);
+      setReasonablePremium('');
+      setAdditionalBenefits('');
+      
+      // Redirect to homepage after a short delay to ensure alert is seen
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('There was an error submitting your information. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
-  // Handle objection form submission (Not interested)
-  const handleObjectionSubmit = (e: React.FormEvent) => {
+  // Update to handle objection form submission with Supabase
+  const handleObjectionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real application, this would send the data to a server
-    console.log('Objection form submitted:', {
-      email,
-      objection,
-      concernLevel
-    });
     
-    // Show confirmation and close modal
-    alert('Thank you for your feedback! We appreciate your time.');
-    closeModal();
+    if (!premiumDetails) return;
     
-    // Reset form
-    setEmail('');
-    setObjection('');
-    setConcernLevel(null);
+    // Prepare data for submission
+    const surveyData = {
+      email: email || undefined,
+      submission_type: 'objection' as const,
+      objection_reason: objection || undefined,
+      concern_level: concernLevel,
+      estimated_premium: premiumDetails.monthlyCost,
+      currency_code: premiumDetails.currency.code,
+      country,
+      employer_size: employerSize,
+      employment_type: employmentType,
+      coverage_period: coveragePeriod,
+      coverage_percentage: coveragePercentage
+    };
+    
+    // Submit to Supabase
+    try {
+      setIsSubmitting(true);
+      await submitSurveyResponse(surveyData);
+      alert('Thank you for your feedback! We appreciate your time.');
+      closeModal();
+      
+      // Reset form
+      setEmail('');
+      setObjection('');
+      setConcernLevel(null);
+      
+      // Redirect to homepage after a short delay to ensure alert is seen
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('There was an error submitting your feedback. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   return (
@@ -713,7 +770,7 @@ export function PremiumCalculator() {
           <div className="bg-white rounded-lg max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold mb-4">Get Started with Income Shield</h2>
             <p className="text-muted-foreground mb-6">
-              Leave your email and we'll contact you with next steps to secure your coverage.
+              We're currently building our platform. Leave your email and we'll notify you as soon as we launch in your region to help secure your coverage.
             </p>
             
             <form onSubmit={handleInterestSubmit} className="space-y-4">
@@ -794,10 +851,20 @@ export function PremiumCalculator() {
               )}
               
               <div className="flex space-x-3 pt-4">
-                <Button type="submit" className="w-full">
-                  Submit
+                <Button 
+                  type="submit" 
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit'}
                 </Button>
-                <Button type="button" variant="outline" className="w-full" onClick={closeModal}>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="w-full" 
+                  onClick={closeModal}
+                  disabled={isSubmitting}
+                >
                   Cancel
                 </Button>
               </div>
@@ -863,10 +930,20 @@ export function PremiumCalculator() {
               </div>
               
               <div className="flex space-x-3 pt-4">
-                <Button type="submit" className="w-full">
-                  Submit Feedback
+                <Button 
+                  type="submit" 
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
                 </Button>
-                <Button type="button" variant="outline" className="w-full" onClick={closeModal}>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="w-full" 
+                  onClick={closeModal}
+                  disabled={isSubmitting}
+                >
                   Cancel
                 </Button>
               </div>

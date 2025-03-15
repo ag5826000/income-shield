@@ -62,7 +62,7 @@ This document outlines the step-by-step plan to transform the existing SaaS land
 - Replace login/signup buttons with a calculator button
 - Update footer content and links
 
-### 3. Create Premium Calculator Page
+### 3. Create Premium Calculator Page (DONE)
 
 - Create a new page at `src/app/[locale]/(unauth)/calculator/page.tsx`
 - Design a form with the following fields:
@@ -85,18 +85,22 @@ This document outlines the step-by-step plan to transform the existing SaaS land
   - "Get Coverage" button
   - "Learn More" option for more information
 
-### 4. Create Interest Survey Component
+### 4. Create Interest Survey Component with Supabase Integration (DONE)
 
-- Develop a survey component to display after premium calculation
-- Include questions like:
-  - How likely are you to purchase this coverage?
-  - What premium amount would you consider reasonable?
-  - What additional benefits would make this more attractive?
-  - How concerned are you about potential layoffs?
-  
-- Create a simple data collection mechanism:
-  - Store responses temporarily (no authentication required)
-  - Optionally collect email for follow-up (with clear consent)
+- Set up Supabase project and create the survey_responses table
+  - Configure table with appropriate fields for both interest and objection submissions
+  - Set up Row Level Security policies for safe data collection
+
+- Implement survey data collection through modal popups:
+  - "Get Coverage" popup for interested users
+  - "Not Right For Me" popup for collecting objection feedback
+  - Both popups feed data into the same Supabase table with appropriate type marking
+
+- Add technical infrastructure:
+  - Install and configure Supabase client
+  - Create service for submitting survey responses
+  - Add loading states and error handling
+  - Provide appropriate user feedback during submission
 
 ### 5. Remove Authentication/Signup Flows
 
@@ -112,6 +116,7 @@ This document outlines the step-by-step plan to transform the existing SaaS land
 - Validate form inputs and calculator logic
 - Test CTAs and button functionality
 - Optimize images and content for performance
+- Test Supabase integration for survey submissions
 
 ### 7. Content Creation
 
