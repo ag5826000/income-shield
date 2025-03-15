@@ -53,6 +53,62 @@ const countryNames: Record<Country, string> = {
   'other': 'Other'
 };
 
+// Define plan features based on coverage period
+interface PlanFeatures {
+  responseTime: number;
+  supportType: string;
+  careerCounseling: boolean;
+  resumeReview: boolean;
+  interviewPrep: boolean;
+  networkingEvents: boolean;
+  jobSearchTools: boolean;
+  mentalHealthSupport: boolean;
+}
+
+const planFeatures: Record<CoveragePeriod, PlanFeatures> = {
+  '': {
+    responseTime: 3,
+    supportType: 'priority',
+    careerCounseling: false,
+    resumeReview: false,
+    interviewPrep: false,
+    networkingEvents: false,
+    jobSearchTools: false,
+    mentalHealthSupport: false
+  },
+  'basic': {
+    responseTime: 7,
+    supportType: 'email',
+    careerCounseling: false,
+    resumeReview: false,
+    interviewPrep: false,
+    networkingEvents: false,
+    jobSearchTools: false,
+    mentalHealthSupport: false
+  },
+  'standard': {
+    responseTime: 3,
+    supportType: 'priority',
+    careerCounseling: true,
+    resumeReview: true,
+    interviewPrep: true,
+    networkingEvents: false,
+    jobSearchTools: false,
+    mentalHealthSupport: false
+  },
+  'premium': {
+    responseTime: 1,
+    supportType: 'dedicated',
+    careerCounseling: true,
+    resumeReview: true,
+    interviewPrep: true,
+    networkingEvents: true,
+    jobSearchTools: true,
+    mentalHealthSupport: true
+  }
+};
+
+// Add plan features to premium details interface
 interface PremiumDetails {
   monthlyCost: number;
   annualCost: number;
@@ -64,6 +120,7 @@ interface PremiumDetails {
     enrollmentPeriod: number;
   };
   currency: CurrencyInfo;
+  planFeatures: PlanFeatures;
 }
 
 export function PremiumCalculator() {
@@ -168,26 +225,24 @@ export function PremiumCalculator() {
     
     const percentageMultiplier = coveragePercentage / 60; // Normalized to 60% as baseline
     
-    // Calculate final monthly premium (in USD)
+    // Calculate final monthly premium directly in local currency
+    // since the salary is already provided in local currency
     const riskFactor = ageMultiplier * employerSizeMultiplier * countryMultiplier * 
                       employmentTypeMultiplier * periodMultiplier * percentageMultiplier;
     const discountFactor = 1 - (experienceDiscount + tenureDiscount);
     
-    // Base calculation in USD
-    const monthlyPremiumUSD = Math.round(salary * baseRate * riskFactor * discountFactor);
-    const annualPremiumUSD = Math.round(monthlyPremiumUSD * 12 * 0.9); // 10% discount for annual payment
-    
-    // Convert to local currency if applicable
-    const monthlyPremium = monthlyPremiumUSD * currencyInfo.rate;
-    const annualPremium = annualPremiumUSD * currencyInfo.rate;
+    // Calculate premium directly in local currency
+    // No need for currency conversion since salary is already in local currency
+    const monthlyPremium = Math.round(salary * baseRate * riskFactor * discountFactor);
+    const annualPremium = Math.round(monthlyPremium * 12 * 0.9); // 10% discount for annual payment
     
     // Get coverage period in months
     const periodMonths = 
       coveragePeriod === 'basic' ? 3 :
       coveragePeriod === 'premium' ? 9 : 6;
     
-    // Max monthly benefit - also convert to local currency
-    const maxBenefit = Math.round(salary * (coveragePercentage / 100) * currencyInfo.rate);
+    // Max monthly benefit also in local currency
+    const maxBenefit = Math.round(salary * (coveragePercentage / 100));
     
     // Set premium details
     setPremiumDetails({
@@ -200,7 +255,8 @@ export function PremiumCalculator() {
         waitingPeriod: 30, // 30 days waiting period
         enrollmentPeriod: 90 // 90 days enrollment period
       },
-      currency: currencyInfo
+      currency: currencyInfo,
+      planFeatures: planFeatures[coveragePeriod]
     });
     
     setIsCalculating(false);
@@ -509,12 +565,39 @@ export function PremiumCalculator() {
             <Separator className="my-4" />
             
             <div className="space-y-2 text-left mb-6">
-              <h3 className="font-medium">Coverage Details:</h3>
-              <ul className="list-disc list-inside text-muted-foreground">
+              <h3 className="font-medium mb-2">Coverage Details:</h3>
+              <ul className="list-disc list-inside text-muted-foreground space-y-1">
                 <li>{premiumDetails.coverageDetails.percentage}% of your salary covered for {premiumDetails.coverageDetails.period}</li>
-                <li>Up to {formatCurrency(premiumDetails.coverageDetails.maxBenefit, premiumDetails.currency)} per month in benefits</li>
-                <li>{premiumDetails.coverageDetails.waitingPeriod}-day waiting period before benefits begin</li>
+                <li>{formatCurrency(premiumDetails.coverageDetails.maxBenefit, premiumDetails.currency)} per month Payout</li>
                 <li>Coverage begins after {premiumDetails.coverageDetails.enrollmentPeriod} days of continuous enrollment</li>
+              </ul>
+              
+              <h3 className="font-medium mt-4 mb-2">Plan Perks:</h3>
+              <ul className="list-disc list-inside text-muted-foreground space-y-1">
+                <li>{premiumDetails.planFeatures.responseTime}-Day Claim Processing</li>
+                <li>
+                  {coveragePeriod === 'basic' && 'Email Support'}
+                  {coveragePeriod === 'standard' && 'Priority Support'}
+                  {coveragePeriod === 'premium' && 'Dedicated Case Manager'}
+                </li>
+                {premiumDetails.planFeatures.careerCounseling && (
+                  <li>Career Counseling Sessions</li>
+                )}
+                {premiumDetails.planFeatures.resumeReview && (
+                  <li>Resume Review & Optimization</li>
+                )}
+                {premiumDetails.planFeatures.interviewPrep && (
+                  <li>Interview Preparation</li>
+                )}
+                {premiumDetails.planFeatures.networkingEvents && (
+                  <li>Access to Networking Events</li>
+                )}
+                {premiumDetails.planFeatures.jobSearchTools && (
+                  <li>Premium Job Search Tools</li>
+                )}
+                {premiumDetails.planFeatures.mentalHealthSupport && (
+                  <li>Mental Health Support</li>
+                )}
               </ul>
             </div>
             
