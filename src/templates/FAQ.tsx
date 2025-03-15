@@ -16,6 +16,7 @@ export const FAQ = () => {
       subtitle="FAQ"
       title="Frequently Asked Questions"
       className="text-left"
+      id="faq"
     >
       <Accordion
         type="single"

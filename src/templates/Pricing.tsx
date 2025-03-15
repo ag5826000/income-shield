@@ -14,6 +14,7 @@ export const Pricing = () => {
       subtitle={t('section_subtitle')}
       title={t('section_title')}
       description={t('section_description')}
+      id="pricing"
     >
       <PricingInformation
         buttonList={{

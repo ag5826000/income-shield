@@ -1,7 +1,6 @@
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
 import { Footer } from '@/templates/Footer';
-import { Navbar } from '@/templates/Navbar';
 import { PremiumCalculator } from './components/PremiumCalculator';
 
 export async function generateMetadata(props: { params: { locale: string } }) {
@@ -21,7 +20,6 @@ const CalculatorPage = (props: { params: { locale: string } }) => {
 
   return (
     <>
-      <Navbar />
       <PremiumCalculator />
       <Footer />
     </>
