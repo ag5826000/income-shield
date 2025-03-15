@@ -1,5 +1,4 @@
 import { ShieldIcon } from 'lucide-react';
-import { useTranslations } from 'next-intl';
 
 import { useAppConfig } from '@/hooks/useAppConfig';
 

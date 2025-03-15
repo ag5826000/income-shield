@@ -1,12 +1,10 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
-import { useAppConfig } from '@/hooks/useAppConfig';
 import { Logo } from '@/templates/Logo';
 
 export const Footer = () => {
   const t = useTranslations('Footer');
-  const AppConfig = useAppConfig();
 
   return (
     <footer className="border-t py-12 md:py-16">

@@ -38,23 +38,6 @@ const countryCurrencies: Record<Country, CurrencyInfo | null> = {
   'other': { code: 'USD', symbol: '$', rate: 1 }
 };
 
-// Country names for display
-const countryNames: Record<Country, string> = {
-  '': '',
-  'us': 'United States',
-  'ca': 'Canada',
-  'uk': 'United Kingdom',
-  'au': 'Australia',
-  'in': 'India',
-  'de': 'Germany',
-  'fr': 'France',
-  'sg': 'Singapore',
-  'jp': 'Japan',
-  'br': 'Brazil',
-  'mx': 'Mexico',
-  'other': 'Other'
-};
-
 // Define plan features based on coverage period
 interface PlanFeatures {
   responseTime: number;
